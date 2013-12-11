@@ -4,7 +4,7 @@
   <title><![CDATA[jerett]]></title>
   <link href="http://jerett.github.io/atom.xml" rel="self"/>
   <link href="http://jerett.github.io/"/>
-  <updated>2013-12-12T02:15:13+08:00</updated>
+  <updated>2013-12-12T02:33:55+08:00</updated>
   <id>http://jerett.github.io/</id>
   <author>
     <name><![CDATA[jerett]]></name>
@@ -41,20 +41,33 @@ Or, if you prefer, <strong>use two underscores instead</strong>.</p>
 
 <p>This is an <a href="http://baidu.com" title="baidu">baidu</a>.</p></blockquote>
 
-<p><img src="../images/13-12-12/a.jpg" alt="" /></p>
+<p><img src="http://jerett.github.io/images/13-12-12/a.jpg"></p>
 
-<pre><code>void genRandom(int m,int n){
- int select = m;
- ofstream writer("data.txt");
- for(int i=0;i&lt;n;++i){
-   if(rand() % (n-i) &lt; select){
-     writer &lt;&lt; i &lt;&lt; endl;
-     -- select;
-   }
- }
- writer.close();
-}
-</code></pre>
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>void genRandom(int m,int n){
+</span><span class='line'> int select = m;
+</span><span class='line'> ofstream writer("data.txt");
+</span><span class='line'> for(int i=0;i&lt;n;++i){
+</span><span class='line'>   if(rand() % (n-i) &lt; select){
+</span><span class='line'>     writer &lt;&lt; i &lt;&lt; endl;
+</span><span class='line'>     -- select;
+</span><span class='line'>   }
+</span><span class='line'> }
+</span><span class='line'> writer.close();
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+
 ]]></content>
   </entry>
   
