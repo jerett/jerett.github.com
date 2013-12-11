@@ -4,7 +4,7 @@
   <title><![CDATA[jerett]]></title>
   <link href="http://jerett.github.io/atom.xml" rel="self"/>
   <link href="http://jerett.github.io/"/>
-  <updated>2013-12-12T00:50:54+08:00</updated>
+  <updated>2013-12-12T01:11:14+08:00</updated>
   <id>http://jerett.github.io/</id>
   <author>
     <name><![CDATA[jerett]]></name>
@@ -12,6 +12,16 @@
   </author>
   <generator uri="http://octopress.org/">Octopress</generator>
 
+  
+  <entry>
+    <title type="html"><![CDATA[Test2]]></title>
+    <link href="http://jerett.github.io/blog/2013/12/12/test2/"/>
+    <updated>2013-12-12T00:00:00+08:00</updated>
+    <id>http://jerett.github.io/blog/2013/12/12/test2</id>
+    <content type="html"><![CDATA[<p>test2
+hahahah</p>
+]]></content>
+  </entry>
   
   <entry>
     <title type="html"><![CDATA[Test]]></title>
