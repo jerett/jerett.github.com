@@ -1,14 +1,6 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://jerett.github.io/blog/2013/11/18/test/</loc>
-        <lastmod>2013-12-12T02:34:04+08:00</lastmod>
-    </url>
-    <url>
-        <loc>http://jerett.github.io/blog/2013/12/12/test2/</loc>
-        <lastmod>2013-12-12T01:10:48+08:00</lastmod>
-    </url>
-    <url>
         <loc>http://jerett.github.io/archives/</loc>
         <lastmod>2013-12-12T02:40:17+08:00</lastmod>
     </url>
