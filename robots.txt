@@ -1,4 +1,4 @@
 User-agent: *
 Disallow: 
 
-Sitemap: http://jerett.github.io//github/sitemap.xml 
+Sitemap: http://jerett.github.io/sitemap.xml 

@@ -1,19 +1,19 @@
 <?xml version='1.0' encoding='UTF-8'?>
 <urlset xmlns='http://www.sitemaps.org/schemas/sitemap/0.9'>
     <url>
-        <loc>http://jerett.github.io//github/blog/2013/11/18/test/</loc>
+        <loc>http://jerett.github.io/blog/2013/11/18/test/</loc>
         <lastmod>2013-11-18T23:13:39+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jerett.github.io//github/blog/archives/</loc>
+        <loc>http://jerett.github.io/blog/archives/</loc>
         <lastmod>2013-11-18T23:13:39+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jerett.github.io//github/</loc>
+        <loc>http://jerett.github.io/</loc>
         <lastmod>2013-11-18T23:13:39+08:00</lastmod>
     </url>
     <url>
-        <loc>http://jerett.github.io//github/robots.txt</loc>
+        <loc>http://jerett.github.io/robots.txt</loc>
         <lastmod>2013-11-18T23:07:10+08:00</lastmod>
     </url>
 </urlset>

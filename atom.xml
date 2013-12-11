@@ -2,10 +2,10 @@
 <feed xmlns="http://www.w3.org/2005/Atom">
 
   <title><![CDATA[jerett]]></title>
-  <link href="http://jerett.github.io//github/atom.xml" rel="self"/>
-  <link href="http://jerett.github.io//github/"/>
-  <updated>2013-12-12T00:35:25+08:00</updated>
-  <id>http://jerett.github.io//github/</id>
+  <link href="http://jerett.github.io/atom.xml" rel="self"/>
+  <link href="http://jerett.github.io/"/>
+  <updated>2013-12-12T00:50:54+08:00</updated>
+  <id>http://jerett.github.io/</id>
   <author>
     <name><![CDATA[jerett]]></name>
     
@@ -15,9 +15,9 @@
   
   <entry>
     <title type="html"><![CDATA[Test]]></title>
-    <link href="http://jerett.github.io//github/blog/2013/11/18/test/"/>
+    <link href="http://jerett.github.io/blog/2013/11/18/test/"/>
     <updated>2013-11-18T00:00:00+08:00</updated>
-    <id>http://jerett.github.io//github/blog/2013/11/18/test</id>
+    <id>http://jerett.github.io/blog/2013/11/18/test</id>
     <content type="html"><![CDATA[<p>test = =</p>
 ]]></content>
   </entry>
