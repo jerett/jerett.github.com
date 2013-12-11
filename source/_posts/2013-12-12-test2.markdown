@@ -1,0 +1,9 @@
+---
+layout: post
+title: "test2"
+date: 2013-12-12 01:04:11 +0800
+comments: true
+categories:A
+---
+test2
+hahahah

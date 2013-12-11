@@ -3,6 +3,6 @@ layout: post
 title: "test"
 date: 2013-11-18 23:12:15 +0800
 comments: true
-categories:test
+categories:B
 ---
 test = =
