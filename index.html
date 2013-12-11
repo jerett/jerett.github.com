@@ -131,7 +131,33 @@ hahahah</p>
   </header>
 
 
-  <div class="entry-content"><p>test = =</p>
+  <div class="entry-content"><blockquote><p>Some of these words <em>are emphasized</em>.
+Some of these words <em>are emphasized also</em>.
+Use two asterisks for <strong>strong emphasis</strong>.
+Or, if you prefer, <strong>use two underscores instead</strong>.</p>
+
+<ul>
+<li>A</li>
+<li>B</li>
+</ul>
+
+
+<p>This is an <a href="http://baidu.com" title="baidu">baidu</a>.</p></blockquote>
+
+<p><img src="../images/13-12-12/a.jpg" alt="" /></p>
+
+<pre><code>void genRandom(int m,int n){
+ int select = m;
+ ofstream writer("data.txt");
+ for(int i=0;i&lt;n;++i){
+   if(rand() % (n-i) &lt; select){
+     writer &lt;&lt; i &lt;&lt; endl;
+     -- select;
+   }
+ }
+ writer.close();
+}
+</code></pre>
 </div>
   
   
