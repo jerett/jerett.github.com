@@ -33,7 +33,7 @@ ffmepg是一个音视频解码、编码库，在这个播放器里主要用来�
 首先我们知道ffmpeg readPacket的时候每个packet都有pts和dts，既然如此我们按照pts显示就行了，为什么会不同步？首先可能因为视频解码编码时间过长，编码完成后可能已经过了应该显示的pts时间，这时候应该尽快显示此帧。有时候解码过快，还未到显示的pts，我们需要延迟显示此帧。		
 但是音频的解码效率很高，而且音频是恒定频率，所以pts稳定增加，所以我们选择视频同步到音频，及以音频为参考时间，调整视频的播放时间进行音视频同步。		
 下面是同步的核心代码
-```		
+```c		
 void video_refresh_timer(void *userdata) {
 
     VideoState *is = (VideoState *)userdata;
