@@ -6,8 +6,7 @@
 	<title>jerett</title>
     <meta name="author" content="jerett">
     
-	<meta name="description" content=" Blog Archives
-">
+	<meta name="description" content="Published on: Aug 27th, 2014 Tags: 吐槽 博客在今年一月份的时候就搭建好了，但是一直没写。最近花了接近两个月的时间完成了IOS客户端的rtmp推流，用到了ffmpeg，并看了一堆音视频编码技术。趁这两天霸道总裁去北京，开始准备好管理一下博客。 简介 &hellip;">
 	
 	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
@@ -81,6 +80,233 @@
     <div id="content" class="inner">
         
 
+
+    <article class="post">
+	<h2 class="title">
+		
+		<a href="/blog/2014/08/27/ji-yu-sdl%2C-ffmpegjian-yi-bo-fang-qi/">
+		
+			基于SDL、FFMpeg简易播放器</a>
+	</h2>
+    <div class="entry-content">
+    <div class="meta">
+      <div class="date">Published on: 
+
+
+
+
+
+
+
+
+  
+
+
+<time datetime="2014-08-27T17:02:48+08:00" pubdate data-updated="true">Aug 27<span>th</span>, 2014</time></div>
+      <div class="tags">Tags: 
+
+</div>
+    </div>
+		<h1>吐槽</h1>
+
+<p>博客在今年一月份的时候就搭建好了，但是一直没写。最近花了接近两个月的时间完成了IOS客户端的rtmp推流，用到了ffmpeg，并看了一堆音视频编码技术。趁这两天霸道总裁去北京，开始准备好管理一下博客。</p>
+
+<h1>简介</h1>
+
+<p>这篇文章主要介绍使用SDL和ffmpeg，c语音编写一个简单播放器的大概实现原理，其中最难理解的就是如何同步音视频。<br/>
+实现主要参考老外的ffmpeg tutorial(<a href="http://dranger.com/ffmpeg/">http://dranger.com/ffmpeg/</a>)。这系列的教程很赞，整体难度给人感觉也很大，主要是教程ffmpeg的sdk似乎是0.6的，而ffmpeg的API接口几乎是每次版本都更新，所以需要更改的地方很多。网上翻译这些列文章也很多，但能找到最新的代码也已经out of date了，所以几乎都没法在ffmepg 2.1上编译。 <br/>
+最近在研究ffmpeg，顺便基于ffmpeg最新的sdk实现了这个播放器，并且将代码进行了模块化，可以直接<code>git clone https://github.com/jerett/sdl_ffmpeg_player.git</code>。</p>
+
+<h1>SDL</h1>
+
+<p>SDL是一个跨平台的多媒体开发的函数库，包括win，unix，ios，android。在这个播放器里主要用来显示视频和播放声音。</p>
+
+<h1>ffmpeg</h1>
+
+<p>ffmepg是一个音视频解码、编码库，在这个播放器里主要用来对文件进行解码，再将编码的数据编码成SDL要求的数据格式。</p>
+
+<h1>原理</h1>
+
+<p>先贴一张工作的流程图。 <br/>
+<img src="images/sdl_ffmpeg_player.png">
+播放器有4个线程，主线程创建其他线程。
+线程之间有几乎都存在生产者消费者的情况，包括:解码线程生产未编码数据，音视频编码线程消费数据；视频编码线程生产picture图片数据，主线程消费并显示图片；</p>
+
+<h3>主线程</h3>
+
+<p>主线程负责初始化ffmpeg和SDL，创建解码线程，并且循环读取事件，分配内存，显示图片。</p>
+
+<h3>解码线程</h3>
+
+<p>解码线程用ffmpeg打开文件，创建context，分析音频流和视频流，并创建音频和视频编码线程。并通过av_read_frame循环读取文件，将AVPacket添加到缓存队列中。为了防止内存过大，缓存队列设置最大BUFFER_SIZE，如果大于BUFFER_SIZE,则sleep等待消费者消费。</p>
+
+<h3>音频编码线程</h3>
+
+<p>音频编码线程是SDL创建，我们只需提供声音数据的回调函数，将音频数据填入回调函数即可。SDL会将填入的数据进行播放。</p>
+
+<h3>视频编码线程</h3>
+
+<p>视频编码线解码数据，并将解码的AVFrame转化为SDL可以显示的SDL_YUVOverlay，加入图片缓存队列，等待主线程显示。</p>
+
+<h3>音视频同步</h3>
+
+<p>最蛋疼的问题就是如何实现音视频同步了。 <br/>
+首先我们知道ffmpeg readPacket的时候每个packet都有pts和dts，既然如此我们按照pts显示就行了，为什么会不同步？首先可能因为视频解码编码时间过长，编码完成后可能已经过了应该显示的pts时间，这时候应该尽快显示此帧。有时候解码过快，还未到显示的pts，我们需要延迟显示此帧。   <br/>
+但是音频的解码效率很高，而且音频是恒定频率，所以pts稳定增加，所以我们选择视频同步到音频，及以音频为参考时间，调整视频的播放时间进行音视频同步。     <br/>
+下面是同步的核心代码</p>
+
+<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<span class='line-number'>2</span>
+<span class='line-number'>3</span>
+<span class='line-number'>4</span>
+<span class='line-number'>5</span>
+<span class='line-number'>6</span>
+<span class='line-number'>7</span>
+<span class='line-number'>8</span>
+<span class='line-number'>9</span>
+<span class='line-number'>10</span>
+<span class='line-number'>11</span>
+<span class='line-number'>12</span>
+<span class='line-number'>13</span>
+<span class='line-number'>14</span>
+<span class='line-number'>15</span>
+<span class='line-number'>16</span>
+<span class='line-number'>17</span>
+<span class='line-number'>18</span>
+<span class='line-number'>19</span>
+<span class='line-number'>20</span>
+<span class='line-number'>21</span>
+<span class='line-number'>22</span>
+<span class='line-number'>23</span>
+<span class='line-number'>24</span>
+<span class='line-number'>25</span>
+<span class='line-number'>26</span>
+<span class='line-number'>27</span>
+<span class='line-number'>28</span>
+<span class='line-number'>29</span>
+<span class='line-number'>30</span>
+<span class='line-number'>31</span>
+<span class='line-number'>32</span>
+<span class='line-number'>33</span>
+<span class='line-number'>34</span>
+<span class='line-number'>35</span>
+<span class='line-number'>36</span>
+<span class='line-number'>37</span>
+<span class='line-number'>38</span>
+<span class='line-number'>39</span>
+<span class='line-number'>40</span>
+<span class='line-number'>41</span>
+<span class='line-number'>42</span>
+<span class='line-number'>43</span>
+<span class='line-number'>44</span>
+<span class='line-number'>45</span>
+<span class='line-number'>46</span>
+<span class='line-number'>47</span>
+<span class='line-number'>48</span>
+<span class='line-number'>49</span>
+<span class='line-number'>50</span>
+<span class='line-number'>51</span>
+<span class='line-number'>52</span>
+<span class='line-number'>53</span>
+<span class='line-number'>54</span>
+<span class='line-number'>55</span>
+<span class='line-number'>56</span>
+<span class='line-number'>57</span>
+<span class='line-number'>58</span>
+<span class='line-number'>59</span>
+<span class='line-number'>60</span>
+<span class='line-number'>61</span>
+<span class='line-number'>62</span>
+<span class='line-number'>63</span>
+<span class='line-number'>64</span>
+<span class='line-number'>65</span>
+<span class='line-number'>66</span>
+<span class='line-number'>67</span>
+</pre></td><td class='code'><pre><code class=''><span class='line'>void video_refresh_timer(void *userdata) {
+</span><span class='line'>
+</span><span class='line'>    VideoState *is = (VideoState *)userdata;
+</span><span class='line'>    VideoPicture *vp;
+</span><span class='line'>    double actual_delay, delay, sync_threshold, ref_clock, diff;
+</span><span class='line'>
+</span><span class='line'>    if(is-&gt;video_st) {
+</span><span class='line'>        if(is-&gt;pictq_size == 0) {
+</span><span class='line'>            schedule_refresh(is, 1);
+</span><span class='line'>        } else {
+</span><span class='line'>
+</span><span class='line'>            /* printf("vidoe clock %f  audio clock %f \n",is-&gt;video_clock,is-&gt;audio_clock); */
+</span><span class='line'>            /* printf("audio clock %f",is-&gt;audio_clock); */
+</span><span class='line'>
+</span><span class='line'>            vp = &is-&gt;pictq[is-&gt;pictq_rindex];
+</span><span class='line'>
+</span><span class='line'>            delay = vp-&gt;pts - is-&gt;frame_last_pts; /* the pts from last time */
+</span><span class='line'>            /* printf("delay %f ",delay); */
+</span><span class='line'>            if(delay &lt;= 0 || delay &gt;= 1.0) {
+</span><span class='line'>                /* if incorrect delay, use previous one */
+</span><span class='line'>                delay = is-&gt;frame_last_delay;
+</span><span class='line'>            }
+</span><span class='line'>            /* save for next time */
+</span><span class='line'>            is-&gt;frame_last_delay = delay;
+</span><span class='line'>            is-&gt;frame_last_pts = vp-&gt;pts;
+</span><span class='line'>
+</span><span class='line'>            /* update delay to sync to audio */
+</span><span class='line'>            ref_clock = get_audio_clock(is);
+</span><span class='line'>            diff = vp-&gt;pts - ref_clock;
+</span><span class='line'>            /* printf("diff %f \n",diff); */
+</span><span class='line'>
+</span><span class='line'>            /* Skip or repeat the frame. Take delay into account
+</span><span class='line'>               FFPlay still doesn't "know if this is the best guess." */
+</span><span class='line'>            sync_threshold = (delay &gt; AV_SYNC_THRESHOLD) ? delay : AV_SYNC_THRESHOLD;
+</span><span class='line'>            if(fabs(diff) &lt; AV_NOSYNC_THRESHOLD) {
+</span><span class='line'>                if(diff &lt;= -sync_threshold) {
+</span><span class='line'>                    delay = 0;
+</span><span class='line'>                } else if(diff &gt;= sync_threshold) {
+</span><span class='line'>                    delay = 2 * delay;
+</span><span class='line'>                }
+</span><span class='line'>            }
+</span><span class='line'>
+</span><span class='line'>            is-&gt;frame_timer += delay;
+</span><span class='line'>            /* computer the REAL delay */
+</span><span class='line'>            actual_delay = is-&gt;frame_timer - (av_gettime() / 1000000.0);
+</span><span class='line'>            /* printf("diff %f actual delay %f \n",diff,actual_delay); */
+</span><span class='line'>            if(actual_delay &lt; 0.010) {
+</span><span class='line'>                /* Really it should skip the picture instead */
+</span><span class='line'>                actual_delay = 0.010;
+</span><span class='line'>            }
+</span><span class='line'>            schedule_refresh(is, (int)(actual_delay * 1000 + 0.5));
+</span><span class='line'>            /* show the picture! */
+</span><span class='line'>            video_display(is);
+</span><span class='line'>
+</span><span class='line'>            /* update queue for next picture! */
+</span><span class='line'>            if(++is-&gt;pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) {
+</span><span class='line'>                is-&gt;pictq_rindex = 0;
+</span><span class='line'>            }
+</span><span class='line'>            SDL_LockMutex(is-&gt;pictq_mutex);
+</span><span class='line'>            is-&gt;pictq_size--;
+</span><span class='line'>            SDL_CondSignal(is-&gt;pictq_cond);
+</span><span class='line'>            SDL_UnlockMutex(is-&gt;pictq_mutex);
+</span><span class='line'>        }
+</span><span class='line'>    } else {
+</span><span class='line'>        schedule_refresh(is, 100);
+</span><span class='line'>    }
+</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+
+
+<p>    <br/>
+同步代码在else里面，首先我们注意到delay这个值，delay是这一帧图像与上一帧的时间差，我们计算它，如果合理就使用，不合理则使用记录的上次的delay。然后我们计算pts与audio_clock的时间差，如果diff过大，说明现在的pts过大，我们需要延后这个picture显示，否则pts会越来越大。如果diff过小，我们需要抓紧显示这张图片，负责video_clock会与audio_clock更小。frame_timer初始值为播放的开始时间，每次增加delay，从而计算出实际的delay。为什么不简单的使用delay这个值呢？我觉得长期累加的值才能产生更稳定的播放效果，这是一个数学论证，作为程序员的我们了解这种思想就好@V@。当然，这只是我的推测。对了，我们还要注意sync_threshold变量的赋值，我们选取max(delay,AV_SYNC_THRESHOLD)赋值，其中AV_SYNC_THRESHOLD是一个宏，大小定义为0.01。因为AV_SYNC_THRESHOLD作为阈值只是一个猜测，我们将delay加入作为猜测才能更好适应更多的输入文件，这样设计音频与视频显示最多也就差一个视频的时间戳。</p>
+
+<h1>结束</h1>
+
+<p>自己的理解大概就是这些，如果有错误，希望能指出，有什么问题想讨论可以发邮件到jered@gmail.com。</p>
+
+		
+		
+	</div>
+
+<div class="meta">
+	
+</div>
+</article>
+
 <nav id="pagenavi">
     
     
@@ -89,7 +315,7 @@
     </div>
     <footer id="footer">
     <div style="display:inline">
-    Copyright &copy; 2013
+    Copyright &copy; 2014
 
     jerett
 . Powered by <a href="http://octopress.org">Octopress</a> | 

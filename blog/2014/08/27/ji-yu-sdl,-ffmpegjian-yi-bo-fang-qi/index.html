@@ -1,24 +1,86 @@
-<?xml version="1.0" encoding="utf-8"?>
-<feed xmlns="http://www.w3.org/2005/Atom">
 
-  <title><![CDATA[jerett]]></title>
-  <link href="http://jerett.github.io/atom.xml" rel="self"/>
-  <link href="http://jerett.github.io/"/>
-  <updated>2014-08-27T20:03:58+08:00</updated>
-  <id>http://jerett.github.io/</id>
-  <author>
-    <name><![CDATA[jerett]]></name>
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta charset="utf-8">
+	<title>基于SDL、FFMpeg简易播放器 - jerett</title>
+    <meta name="author" content="jerett">
     
-  </author>
-  <generator uri="http://octopress.org/">Octopress</generator>
+	<meta name="description" content="吐槽 博客在今年一月份的时候就搭建好了，但是一直没写。最近花了接近两个月的时间完成了IOS客户端的rtmp推流，用到了ffmpeg，并看了一堆音视频编码技术。趁这两天霸道总裁去北京，开始准备好管理一下博客。 简介 这篇文章主要介绍使用SDL和ffmpeg，c语音编写一个简单播放器的大概实现原理， &hellip;">
+	
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
 
+	<link href="/atom.xml" rel="alternate" title="jerett" type="application/atom+xml">
+	<link rel="canonical" href="">
+	<link href="/favicon.ico" rel="shortcut icon">
+    <link href="/stylesheets/screen.css" media="screen, projection" rel="stylesheet" type="text/css">
+
+    <link href='http://fonts.googleapis.com/css?family=Slackey' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Fjalla+One' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Amethysta' rel='stylesheet' type='text/css'>
+	<script src="//ajax.googleapis.com/ajax/libs/jquery/1.8.2/jquery.min.js"></script>
+    <!--[if lt IE 9]><script src="//html5shiv.googlecode.com/svn/trunk/html5.js"></script><![endif]-->
+
+    <script type="text/javascript" src="/javascripts/jquery-tapir.js"></script>
+
+    <!-- remove or comment it to disable ajaxification -->   
+    <script src="/javascripts/ajaxify.js"></script>
+   
+    
+    
+
+</head>
+
+
+<body>
+    <div id="wrapper">
+    <header id="header" class="inner"><!-- for more effects see _animate.scss -->
+<h1 class="animated bounceInDown">
+    <div id="headerbg">
+        jerett
+    </div>
+</h1>
+<br>
+
+<ul id="social-links" style="text-align:center">
   
-  <entry>
-    <title type="html"><![CDATA[基于SDL、FFMpeg简易播放器]]></title>
-    <link href="http://jerett.github.io/blog/2014/08/27/ji-yu-sdl%2C-ffmpegjian-yi-bo-fang-qi/"/>
-    <updated>2014-08-27T17:02:48+08:00</updated>
-    <id>http://jerett.github.io/blog/2014/08/27/ji-yu-sdl,-ffmpegjian-yi-bo-fang-qi</id>
-    <content type="html"><![CDATA[<h1>吐槽</h1>
+  
+  
+  
+  
+  
+  
+  
+</ul>
+
+
+<!-- use full url including 'index.html' for navigation bar if you are using ajax -->
+<ul id="nav">
+	<li id="ajax"><a href="/index.html">Home</a></li>
+	<li id="ajax"><a href="/blog/archives/index.html">Archives</a></li>
+    <li><a href="/atom.xml">RSS</a></li>
+    
+    <li>
+    <div id="dark">
+        <form method="get" action="/search.html" id="search">
+            <input name="query" type="text" placeholder="Search..." x-webkit-speech />
+        </form>
+    </div>
+    </li>
+        
+</ul>
+
+
+
+
+</header>
+
+<div id="toload">
+<!-- begin toload --> 
+    <div id="content" class="inner">
+        <article class="post">
+	<h2 class="title">基于SDL、FFMpeg简易播放器</h2>
+	<div class="entry-content"><h1>吐槽</h1>
 
 <p>博客在今年一月份的时候就搭建好了，但是一直没写。最近花了接近两个月的时间完成了IOS客户端的rtmp推流，用到了ffmpeg，并看了一堆音视频编码技术。趁这两天霸道总裁去北京，开始准备好管理一下博客。</p>
 
@@ -208,7 +270,60 @@
 <h1>结束</h1>
 
 <p>自己的理解大概就是这些，如果有错误，希望能指出，有什么问题想讨论可以发邮件到jered@gmail.com。</p>
-]]></content>
-  </entry>
-  
-</feed>
+</div>
+
+<div class="meta">
+	
+</div>
+</article>
+
+	<div class="share">
+	<div class="addthis_toolbox addthis_default_style ">
+	
+	
+	<a class="addthis_button_tweet"></a>
+	
+	
+	<a class="addthis_counter addthis_pill_style"></a>
+	</div>
+  <script type="text/javascript" src="http://s7.addthis.com/js/250/addthis_widget.js#pubid="></script>
+</div>
+
+
+
+    </div>
+    <footer id="footer">
+    <div style="display:inline">
+    Copyright &copy; 2014
+
+    jerett
+. Powered by <a href="http://octopress.org">Octopress</a> | 
+    Theme <a href="http://github.com/panks/fabric">fabric</a> by <a href="http://panks.me">Pankaj Kumar</a>
+</div>
+
+
+    </footer>
+    <script src="/javascripts/fabric.js"></script>
+<script src="/javascripts/jquery.fancybox.pack.js"></script>
+<script type="text/javascript">
+(function($){
+	$('.fancybox').fancybox();
+})(jQuery);
+</script> <!-- Delete or comment this line to disable Fancybox -->
+
+
+
+
+
+
+<!-- end toload --> 
+</div>
+</div>
+<script src="/javascripts/jquery.ui.totop.js" type="text/javascript"></script>
+<script type="text/javascript">
+/*<![CDATA[*/
+;(function($){$().UItoTop({easingType:'easeOutCirc'});})(jQuery); 
+/*]]>*/
+</script><!-- remove it to remove the scroll to top button -->
+</body>
+</html>
