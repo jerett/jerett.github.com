@@ -101,7 +101,7 @@
 <h1>原理</h1>
 
 <p>先贴一张工作的流程图。 <br/>
-<img src="images/sdl_ffmpeg_player.png">
+<img src="/images/sdl_ffmpeg_player.png">
 播放器有4个线程，主线程创建其他线程。
 线程之间有几乎都存在生产者消费者的情况，包括:解码线程生产未编码数据，音视频编码线程消费数据；视频编码线程生产picture图片数据，主线程消费并显示图片；</p>
 

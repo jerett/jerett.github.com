@@ -4,7 +4,7 @@
   <title><![CDATA[jerett]]></title>
   <link href="http://jerett.github.io/atom.xml" rel="self"/>
   <link href="http://jerett.github.io/"/>
-  <updated>2014-08-27T20:03:58+08:00</updated>
+  <updated>2014-08-27T20:13:09+08:00</updated>
   <id>http://jerett.github.io/</id>
   <author>
     <name><![CDATA[jerett]]></name>
@@ -39,7 +39,7 @@
 <h1>原理</h1>
 
 <p>先贴一张工作的流程图。 <br/>
-<img src="images/sdl_ffmpeg_player.png">
+<img src="http://jerett.github.io/images/sdl_ffmpeg_player.png">
 播放器有4个线程，主线程创建其他线程。
 线程之间有几乎都存在生产者消费者的情况，包括:解码线程生产未编码数据，音视频编码线程消费数据；视频编码线程生产picture图片数据，主线程消费并显示图片；</p>
 
