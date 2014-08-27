@@ -128,7 +128,7 @@
 但是音频的解码效率很高，而且音频是恒定频率，所以pts稳定增加，所以我们选择视频同步到音频，及以音频为参考时间，调整视频的播放时间进行音视频同步。     <br/>
 下面是同步的核心代码</p>
 
-<figure class='code'><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
+<figure class='code'><figcaption><span></span></figcaption><div class="highlight"><table><tr><td class="gutter"><pre class="line-numbers"><span class='line-number'>1</span>
 <span class='line-number'>2</span>
 <span class='line-number'>3</span>
 <span class='line-number'>4</span>
@@ -195,76 +195,77 @@
 <span class='line-number'>65</span>
 <span class='line-number'>66</span>
 <span class='line-number'>67</span>
-</pre></td><td class='code'><pre><code class=''><span class='line'>void video_refresh_timer(void *userdata) {
+</pre></td><td class='code'><pre><code class='c'><span class='line'><span class="kt">void</span> <span class="nf">video_refresh_timer</span><span class="p">(</span><span class="kt">void</span> <span class="o">*</span><span class="n">userdata</span><span class="p">)</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>    VideoState *is = (VideoState *)userdata;
-</span><span class='line'>    VideoPicture *vp;
-</span><span class='line'>    double actual_delay, delay, sync_threshold, ref_clock, diff;
+</span><span class='line'>    <span class="n">VideoState</span> <span class="o">*</span><span class="n">is</span> <span class="o">=</span> <span class="p">(</span><span class="n">VideoState</span> <span class="o">*</span><span class="p">)</span><span class="n">userdata</span><span class="p">;</span>
+</span><span class='line'>    <span class="n">VideoPicture</span> <span class="o">*</span><span class="n">vp</span><span class="p">;</span>
+</span><span class='line'>    <span class="kt">double</span> <span class="n">actual_delay</span><span class="p">,</span> <span class="n">delay</span><span class="p">,</span> <span class="n">sync_threshold</span><span class="p">,</span> <span class="n">ref_clock</span><span class="p">,</span> <span class="n">diff</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>    if(is-&gt;video_st) {
-</span><span class='line'>        if(is-&gt;pictq_size == 0) {
-</span><span class='line'>            schedule_refresh(is, 1);
-</span><span class='line'>        } else {
+</span><span class='line'>    <span class="k">if</span><span class="p">(</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">video_st</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>        <span class="k">if</span><span class="p">(</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_size</span> <span class="o">==</span> <span class="mi">0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>            <span class="n">schedule_refresh</span><span class="p">(</span><span class="n">is</span><span class="p">,</span> <span class="mi">1</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
 </span><span class='line'>
-</span><span class='line'>            /* printf("vidoe clock %f  audio clock %f \n",is-&gt;video_clock,is-&gt;audio_clock); */
-</span><span class='line'>            /* printf("audio clock %f",is-&gt;audio_clock); */
+</span><span class='line'>            <span class="cm">/* printf(&quot;vidoe clock %f  audio clock %f \n&quot;,is-&gt;video_clock,is-&gt;audio_clock); */</span>
+</span><span class='line'>            <span class="cm">/* printf(&quot;audio clock %f&quot;,is-&gt;audio_clock); */</span>
 </span><span class='line'>
-</span><span class='line'>            vp = &is-&gt;pictq[is-&gt;pictq_rindex];
+</span><span class='line'>            <span class="n">vp</span> <span class="o">=</span> <span class="o">&amp;</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq</span><span class="p">[</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_rindex</span><span class="p">];</span>
 </span><span class='line'>
-</span><span class='line'>            delay = vp-&gt;pts - is-&gt;frame_last_pts; /* the pts from last time */
-</span><span class='line'>            /* printf("delay %f ",delay); */
-</span><span class='line'>            if(delay &lt;= 0 || delay &gt;= 1.0) {
-</span><span class='line'>                /* if incorrect delay, use previous one */
-</span><span class='line'>                delay = is-&gt;frame_last_delay;
-</span><span class='line'>            }
-</span><span class='line'>            /* save for next time */
-</span><span class='line'>            is-&gt;frame_last_delay = delay;
-</span><span class='line'>            is-&gt;frame_last_pts = vp-&gt;pts;
+</span><span class='line'>            <span class="n">delay</span> <span class="o">=</span> <span class="n">vp</span><span class="o">-&gt;</span><span class="n">pts</span> <span class="o">-</span> <span class="n">is</span><span class="o">-&gt;</span><span class="n">frame_last_pts</span><span class="p">;</span> <span class="cm">/* the pts from last time */</span>
+</span><span class='line'>            <span class="cm">/* printf(&quot;delay %f &quot;,delay); */</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="n">delay</span> <span class="o">&lt;=</span> <span class="mi">0</span> <span class="o">||</span> <span class="n">delay</span> <span class="o">&gt;=</span> <span class="mf">1.0</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="cm">/* if incorrect delay, use previous one */</span>
+</span><span class='line'>                <span class="n">delay</span> <span class="o">=</span> <span class="n">is</span><span class="o">-&gt;</span><span class="n">frame_last_delay</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="cm">/* save for next time */</span>
+</span><span class='line'>            <span class="n">is</span><span class="o">-&gt;</span><span class="n">frame_last_delay</span> <span class="o">=</span> <span class="n">delay</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">is</span><span class="o">-&gt;</span><span class="n">frame_last_pts</span> <span class="o">=</span> <span class="n">vp</span><span class="o">-&gt;</span><span class="n">pts</span><span class="p">;</span>
 </span><span class='line'>
-</span><span class='line'>            /* update delay to sync to audio */
-</span><span class='line'>            ref_clock = get_audio_clock(is);
-</span><span class='line'>            diff = vp-&gt;pts - ref_clock;
-</span><span class='line'>            /* printf("diff %f \n",diff); */
+</span><span class='line'>            <span class="cm">/* update delay to sync to audio */</span>
+</span><span class='line'>            <span class="n">ref_clock</span> <span class="o">=</span> <span class="n">get_audio_clock</span><span class="p">(</span><span class="n">is</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">diff</span> <span class="o">=</span> <span class="n">vp</span><span class="o">-&gt;</span><span class="n">pts</span> <span class="o">-</span> <span class="n">ref_clock</span><span class="p">;</span>
+</span><span class='line'>            <span class="cm">/* printf(&quot;diff %f \n&quot;,diff); */</span>
 </span><span class='line'>
-</span><span class='line'>            /* Skip or repeat the frame. Take delay into account
-</span><span class='line'>               FFPlay still doesn't "know if this is the best guess." */
-</span><span class='line'>            sync_threshold = (delay &gt; AV_SYNC_THRESHOLD) ? delay : AV_SYNC_THRESHOLD;
-</span><span class='line'>            if(fabs(diff) &lt; AV_NOSYNC_THRESHOLD) {
-</span><span class='line'>                if(diff &lt;= -sync_threshold) {
-</span><span class='line'>                    delay = 0;
-</span><span class='line'>                } else if(diff &gt;= sync_threshold) {
-</span><span class='line'>                    delay = 2 * delay;
-</span><span class='line'>                }
-</span><span class='line'>            }
+</span><span class='line'>            <span class="cm">/* Skip or repeat the frame. Take delay into account</span>
+</span><span class='line'><span class="cm">               FFPlay still doesn&#39;t &quot;know if this is the best guess.&quot; */</span>
+</span><span class='line'>            <span class="n">sync_threshold</span> <span class="o">=</span> <span class="p">(</span><span class="n">delay</span> <span class="o">&gt;</span> <span class="n">AV_SYNC_THRESHOLD</span><span class="p">)</span> <span class="o">?</span> <span class="n">delay</span> <span class="o">:</span> <span class="n">AV_SYNC_THRESHOLD</span><span class="p">;</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="n">fabs</span><span class="p">(</span><span class="n">diff</span><span class="p">)</span> <span class="o">&lt;</span> <span class="n">AV_NOSYNC_THRESHOLD</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="k">if</span><span class="p">(</span><span class="n">diff</span> <span class="o">&lt;=</span> <span class="o">-</span><span class="n">sync_threshold</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="n">delay</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span> <span class="k">else</span> <span class="k">if</span><span class="p">(</span><span class="n">diff</span> <span class="o">&gt;=</span> <span class="n">sync_threshold</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                    <span class="n">delay</span> <span class="o">=</span> <span class="mi">2</span> <span class="o">*</span> <span class="n">delay</span><span class="p">;</span>
+</span><span class='line'>                <span class="p">}</span>
+</span><span class='line'>            <span class="p">}</span>
 </span><span class='line'>
-</span><span class='line'>            is-&gt;frame_timer += delay;
-</span><span class='line'>            /* computer the REAL delay */
-</span><span class='line'>            actual_delay = is-&gt;frame_timer - (av_gettime() / 1000000.0);
-</span><span class='line'>            /* printf("diff %f actual delay %f \n",diff,actual_delay); */
-</span><span class='line'>            if(actual_delay &lt; 0.010) {
-</span><span class='line'>                /* Really it should skip the picture instead */
-</span><span class='line'>                actual_delay = 0.010;
-</span><span class='line'>            }
-</span><span class='line'>            schedule_refresh(is, (int)(actual_delay * 1000 + 0.5));
-</span><span class='line'>            /* show the picture! */
-</span><span class='line'>            video_display(is);
+</span><span class='line'>            <span class="n">is</span><span class="o">-&gt;</span><span class="n">frame_timer</span> <span class="o">+=</span> <span class="n">delay</span><span class="p">;</span>
+</span><span class='line'>            <span class="cm">/* computer the REAL delay */</span>
+</span><span class='line'>            <span class="n">actual_delay</span> <span class="o">=</span> <span class="n">is</span><span class="o">-&gt;</span><span class="n">frame_timer</span> <span class="o">-</span> <span class="p">(</span><span class="n">av_gettime</span><span class="p">()</span> <span class="o">/</span> <span class="mf">1000000.0</span><span class="p">);</span>
+</span><span class='line'>            <span class="cm">/* printf(&quot;diff %f actual delay %f \n&quot;,diff,actual_delay); */</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="n">actual_delay</span> <span class="o">&lt;</span> <span class="mf">0.010</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="cm">/* Really it should skip the picture instead */</span>
+</span><span class='line'>                <span class="n">actual_delay</span> <span class="o">=</span> <span class="mf">0.010</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="n">schedule_refresh</span><span class="p">(</span><span class="n">is</span><span class="p">,</span> <span class="p">(</span><span class="kt">int</span><span class="p">)(</span><span class="n">actual_delay</span> <span class="o">*</span> <span class="mi">1000</span> <span class="o">+</span> <span class="mf">0.5</span><span class="p">));</span>
+</span><span class='line'>            <span class="cm">/* show the picture! */</span>
+</span><span class='line'>            <span class="n">video_display</span><span class="p">(</span><span class="n">is</span><span class="p">);</span>
 </span><span class='line'>
-</span><span class='line'>            /* update queue for next picture! */
-</span><span class='line'>            if(++is-&gt;pictq_rindex == VIDEO_PICTURE_QUEUE_SIZE) {
-</span><span class='line'>                is-&gt;pictq_rindex = 0;
-</span><span class='line'>            }
-</span><span class='line'>            SDL_LockMutex(is-&gt;pictq_mutex);
-</span><span class='line'>            is-&gt;pictq_size--;
-</span><span class='line'>            SDL_CondSignal(is-&gt;pictq_cond);
-</span><span class='line'>            SDL_UnlockMutex(is-&gt;pictq_mutex);
-</span><span class='line'>        }
-</span><span class='line'>    } else {
-</span><span class='line'>        schedule_refresh(is, 100);
-</span><span class='line'>    }
-</span><span class='line'>}</span></code></pre></td></tr></table></div></figure>
+</span><span class='line'>            <span class="cm">/* update queue for next picture! */</span>
+</span><span class='line'>            <span class="k">if</span><span class="p">(</span><span class="o">++</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_rindex</span> <span class="o">==</span> <span class="n">VIDEO_PICTURE_QUEUE_SIZE</span><span class="p">)</span> <span class="p">{</span>
+</span><span class='line'>                <span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_rindex</span> <span class="o">=</span> <span class="mi">0</span><span class="p">;</span>
+</span><span class='line'>            <span class="p">}</span>
+</span><span class='line'>            <span class="n">SDL_LockMutex</span><span class="p">(</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_mutex</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_size</span><span class="o">--</span><span class="p">;</span>
+</span><span class='line'>            <span class="n">SDL_CondSignal</span><span class="p">(</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_cond</span><span class="p">);</span>
+</span><span class='line'>            <span class="n">SDL_UnlockMutex</span><span class="p">(</span><span class="n">is</span><span class="o">-&gt;</span><span class="n">pictq_mutex</span><span class="p">);</span>
+</span><span class='line'>        <span class="p">}</span>
+</span><span class='line'>    <span class="p">}</span> <span class="k">else</span> <span class="p">{</span>
+</span><span class='line'>        <span class="n">schedule_refresh</span><span class="p">(</span><span class="n">is</span><span class="p">,</span> <span class="mi">100</span><span class="p">);</span>
+</span><span class='line'>    <span class="p">}</span>
+</span><span class='line'><span class="p">}</span>
+</span></code></pre></td></tr></table></div></figure>
 
 
-<p>    <br/>
+<p>   <br/>
 同步代码在else里面，首先我们注意到delay这个值，delay是这一帧图像与上一帧的时间差，我们计算它，如果合理就使用，不合理则使用记录的上次的delay。然后我们计算pts与audio_clock的时间差，如果diff过大，说明现在的pts过大，我们需要延后这个picture显示，否则pts会越来越大。如果diff过小，我们需要抓紧显示这张图片，负责video_clock会与audio_clock更小。frame_timer初始值为播放的开始时间，每次增加delay，从而计算出实际的delay。为什么不简单的使用delay这个值呢？我觉得长期累加的值才能产生更稳定的播放效果，这是一个数学论证，作为程序员的我们了解这种思想就好@V@。当然，这只是我的推测。对了，我们还要注意sync_threshold变量的赋值，我们选取max(delay,AV_SYNC_THRESHOLD)赋值，其中AV_SYNC_THRESHOLD是一个宏，大小定义为0.01。因为AV_SYNC_THRESHOLD作为阈值只是一个猜测，我们将delay加入作为猜测才能更好适应更多的输入文件，这样设计音频与视频显示最多也就差一个视频的时间戳。</p>
 
 <h1>结束</h1>
