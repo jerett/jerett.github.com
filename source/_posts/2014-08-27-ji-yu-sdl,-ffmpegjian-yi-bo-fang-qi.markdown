@@ -10,7 +10,10 @@ categories:
 #简介
 这篇文章主要介绍使用SDL和ffmpeg，c语音编写一个简单播放器的大概实现原理，其中最难理解的就是如何同步音视频。	
 实现主要参考老外的ffmpeg tutorial(http://dranger.com/ffmpeg/)。这系列的教程很赞，整体难度给人感觉也很大，主要是教程ffmpeg的sdk似乎是0.6的，而ffmpeg的API接口几乎是每次版本都更新，所以需要更改的地方很多。网上翻译这些列文章也很多，但能找到最新的代码也已经out of date了，所以几乎都没法在ffmepg 2.1上编译。	
-最近在研究ffmpeg，顺便基于ffmpeg最新的sdk实现了这个播放器，并且将代码进行了模块化，可以直接```git clone https://github.com/jerett/sdl_ffmpeg_player.git```。
+最近在研究ffmpeg，顺便基于ffmpeg最新的sdk实现了这个播放器，并且将代码进行了模块化，可以直接```git clone https://github.com/jerett/sdl_ffmpeg_player.git```。		
+贴张效果图		
+{%img /images/player_example.png %}
+
 #SDL
 SDL是一个跨平台的多媒体开发的函数库，包括win，unix，ios，android。在这个播放器里主要用来显示视频和播放声音。
 #ffmpeg
